@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>城市指标地图</title>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <link href='./style.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <script src="./lib/jquery-3.4.1.min.js"></script>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: rgba(0, 0, 0);
+            color: #fff;
+        }
+
+        header {
+            height: 120px;
+            line-height: 105px;
+            color: #fff
+        }
+
+        header label {
+            font-size: 42px;
+            font-weight: bold;
+            margin-left: 32px;
+        }
+
+        header ul {
+            display: inline-flex;
+            gap: 20px;
+            margin-right: 30px;
+            position: absolute;
+            right: 30px;
+        }
+
+        header li {
+            list-style: none;
+            font-size: 16px;
+            height: 70px;
+            cursor: pointer;
+        }
+
+        header li.active {
+            border-bottom: 1px solid #fff;
+        }
+
+        #map-container {
+            display: flex;
+            width: 100%;
+            height: calc(100% - 120px);
+            /* gap: 10px;  */
+            justify-content: space-between;
+        }
+
+        #map-left {
+            flex: 1;
+            flex-basis: calc(50% - 10px);
+            margin-right: 10px;
+            /* flex: 2; 
+            border: 1px solid #ccc; 
+            flex-grow: 1; */
+        }
+
+        #map-right {
+            flex: 1;
+            flex-basis: calc(50% - 20px);
+            margin-right: 10px;
+        }
+
+        #ate-chart {
+            flex: 1;
+            flex-basis: calc(25% - 10px);
+            /* flex: 1;  */
+            /* flex-grow: 0; */
+            /* border: 1px solid #ccc;  */
+        }
+
+        #controls {
+            position: absolute;
+            top: 76px;
+            left: 30px;
+            z-index: 1;
+            padding: 10px;
+            border-radius: 3px;
+            color: #ccc;
+            display: flex;
+        }
+
+        #controls label {
+            font-size: 20px;
+            color: #fff;
+            margin-right: 38px;
+        }
+
+        #controls div {
+            margin-right: 10px;
+            cursor: pointer;
+            border: 0.5px solid #ccc;
+            padding: 2px 3px;
+        }
+
+        #controls div.active {
+            border: 1px solid rgb(251, 104, 72);
+            color: rgb(251, 104, 72);
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+            /* background: #000000cf; */
+            padding: 10px;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* 添加这一行 */
+        }
+
+        nav {
+            position: absolute;
+            /* 使导航栏绝对定位 */
+            top: 10px;
+            /* 距离顶部10px */
+            right: 10px;
+            /* 距离右侧10px */
+            z-index: 2;
+            /* 确保在其他元素之上 */
+            background: white;
+            /* 背景颜色 */
+            padding: 5px;
+            /* 内边距 */
+            border-radius: 3px;
+            /* 圆角 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* 阴影效果 */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <label>CAGAN for Light Pollution Control</label>
+        <ul id="navigation">
+            <li value="A" class="active">Identifying Contributors to Light Pollution</li>
+            <li value="B">Causality Interpretability by CAGAN</li>
+        </ul>
+    </header>
+
+    <div id="controls">
+        <!-- <label>City:</label> -->
+        <div value="beijing" class="active">Beijing</div>
+        <!-- <div value="shanghai">Shanghai</div> -->
+        <!-- <div value="guangzhou">Guangzhou</div> -->
+        <div value="london">London</div>
+        <div value="losAngeles">LosAngeles</div>
+        <!-- <div value="paris">Paris</div> -->
+        <!-- <div value="newyork">NewYork</div> -->
+    </div>
+
+    <div id="map-container">
+        <div id="map-left">
+            <div class="map-controls">
+                <select id="poiSelect">
+                    <option value="residential_mean_NTL">Residential</option>
+                    <option value="industrial_mean_NTL">Industrial</option>
+                    <option value="retail_mean_NTL">Retail</option>
+                    <option value="brownfield_mean_NTL">Brownfield</option>
+                    <option value="commercial_mean_NTL">Commercial</option>
+                    <option value="construction_mean_NTL">Construction</option>
+                    <option value="farmland_mean_NTL">Farmland</option>
+                    <option value="forest_mean_NTL">Forest</option>
+                    <option value="grass_mean_NTL">Grass</option>
+
+                </select>
+            </div>
+        </div>
+        <div id="map-right">
+            <div class="map-controls">
+                <select id="indicatorSelect">
+                    <option value="Over_illumination">Over_illumination</option>
+                    <option value="Trespass">Trespass</option>
+                    <option value="Clutter">Clutter</option>
+                </select>
+            </div> 
+        </div>
+
+        <div id="ate-chart" class="bar-chart">
+            <h2 style="color: #fff;">ATE</h2>
+            <div style="height: 350px;     width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; 
+        ">
+                <!-- <div class="bar" id="bar" data-value="0" style="background-color: #FFFC6A;"></div> -->
+                <div class="bar" id="bar" data-value="0" style="background-color: #FEF8A0; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"></div>
+            </div>
+            <!-- <p id="word" style="width: 80%;">这里是文字说明</p> -->
+        </div>
+    </div>
+
+
+    <div id="image-container" style="display: none;width: 70%;margin: auto;">
+        <div style="display: flex;justify-content: space-around;">
+            <button id="changeParcelButton"
+                style="width: 180px; height: 50px; background: rgb(251, 104, 72); color: #fff; border: none; border-radius: 5px; cursor: pointer;">Change
+                Parcel</button> <!-- 添加按钮 -->
+            <div style=" text-align: right;width: 360px;">
+                <div style="display: flex;justify-content: space-between;align-items: center;">
+                <label style="width: 100px;">Residential</label> <!-- 只能取 0 +1 +5  -->
+                <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="1" step="1" onchange="updateImage()" oninput="this.value = (this.value < 1) ? 0 : (this.value > 5) ? 5 : (this.value % 4 === 0 ? this.value : (this.value < 3 ? 1 : 5));"> 仅允许选择1和5 -->
+                <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 1) ? 1 : 5;"> 选择小于等于1返回1，大于1返回5 -->
+                <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="1" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 0) ? 0 : (this.value === 1 ? 1 : 5);"> 选择小于等于0返回0，等于1返回1，大于1返回5  -->
+                <input type="range" id="residentialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
+                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;">
+                <span>0</span>
+            </div>
+            <div style="display: flex;justify-content: space-between;align-items: center;">
+                <label style="width: 100px;">Commercial</label> <!-- 只能取 0 +1 +5  -->
+                <input type="range" id="commercialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
+                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;"> 
+                    <span>0</span><!-- 仅允许选择1和5 -->
+                </div>
+            <div style="display: flex;justify-content: space-between;align-items: center;">
+                <label style="width: 100px;">Construction</label> <!-- 只能取 0 +1 +5  -->
+                <input type="range" id="constructionSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
+                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" > 
+                    <span>0</span> <!-- 仅允许选择1和5 -->
+                </div>
+            <div style="display: flex;justify-content: space-between;align-items: center;">
+                <label style="width: 100px;">Grassland</label> <!-- 只能取 -5 0  -->
+                <!-- <input type="range" id="grasslandSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()" oninput="this.value = -5;"> 仅允许选择-5 -->
+                <input type="range" id="grasslandSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
+                    oninput="this.value = (this.value < 0) ? -5 : 0;"> <!-- 如果小于0，则为-5，如果大于等于0，则为0 -->
+                    <span>0</span>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; margin-top: 50px; justify-content: space-between; align-items: center;">
+            <div style="flex: 1; text-align: center;">
+                <img id="groundTruthImage" src="./data/fig/1000.jpg" alt="Ground Truth"
+                    style="width: 400px; height: auto;">
+                <p>Ground Truth</p>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <img id="generatedImage" src="./data/fig/1000.jpg" alt="Generation" style="width: 400px; height: auto;">
+                <p>Generation</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYmFvYmkiLCJhIjoiY20yMXp0MWp3MDF1eDJpb2ZrdHh1ZDNhMCJ9.Ve6bYgzCzDV5G64ZfYGm3w';
+
+        var mapLeft = new mapboxgl.Map({
+            container: 'map-left',
+            style: 'mapbox://styles/mapbox/dark-v10',
+            center: [116.4074, 39.9042], // 默认显示北京
+            zoom: 10,
+            pitch: 45,// 添加这一行
+            bearing: -30,
+            antialias: true, // 启用抗锯齿
+        });
+
+        var mapRight = new mapboxgl.Map({
+            container: 'map-right',
+            style: 'mapbox://styles/mapbox/dark-v10',
+            center: [116.4074, 39.9042], // 默认显示北京
+            zoom: 10,
+            pitch: 45, // 添加这一行
+            bearing: -30,
+            antialias: true // 启用抗锯齿
+        });
+
+        var cityData = {
+            'beijing': './data/Beijing_data.geojson',
+            'shanghai': './data/Shanghai_data.geojson',
+            'guangzhou': './data/Guangzhou_data.geojson',
+            'london': './data/London_data.geojson',
+            'losAngeles': './data/LosAngeles_data.geojson',
+            'paris': './data/Paris_data.geojson',
+            'newyork': './data/Newyork_data.geojson',
+        };
+
+        var currentCity = 'beijing';
+        var currentIndicator = 'Over_illumination';
+        var currentPoi = 'residential_mean_NTL';
+
+        function updateMap() {
+            fetch(cityData[currentCity])
+                .then(response => response.json())
+                .then(data => {
+
+                    // 移除现有图层
+                    removeExistingLayers(mapLeft);
+                    removeExistingLayers(mapRight);
+
+                    // 为每种几何类型添加新图层
+                    addGeometryLayers(mapLeft, data, 'left');
+                    addGeometryLayers(mapRight, data, 'right');
+
+                    var bounds = new mapboxgl.LngLatBounds();
+
+                    data.features.forEach(function (feature) {
+                        if (feature.geometry) {
+
+
+                            // 扩展边界框
+                            extendBounds(bounds, feature.geometry);
+                        }
+                    });
+                    // console.log('扩展完边界了')
+
+                    if (!bounds.isEmpty()) {
+                        mapLeft.fitBounds(bounds, { padding: 50 });
+                        mapRight.fitBounds(bounds, { padding: 50 });
+                    } else {
+                        console.error('未找到有效的坐标数据');
+                    }
+                })
+                .catch(error => {
+                    console.error('加载城市数据时出错:', error);
+                    alert('无法加载所选城市的数据，请检查数据格式或网络连接。');
+                });
+        }
+
+        function removeExistingLayers(map) {
+            const layerIds = ['points', 'lines', 'polygons'];
+            layerIds.forEach(id => {
+                if (map.getLayer(id)) map.removeLayer(id);
+                if (map.getSource(id)) map.removeSource(id);
+            });
+        }
+
+        function addGeometryLayers(map, data, side) {
+
+            const layerIds = [`points-${side}`, `lines-${side}`, `polygons-${side}`];
+
+            // 首先移除已存在的图层
+            layerIds.forEach(id => {
+                if (map.getLayer(id)) {
+                    map.removeLayer(id);
+                }
+                if (map.getSource(id)) {
+                    map.removeSource(id);
+                }
+            });
+
+            function getPoiColor(poiType) {
+                const poiColors = {
+                    'residential_mean_NTL': '#e41a1c',
+                    'industrial_mean_NTL': '#377eb8',
+                    'retail_mean_NTL': '#4daf4a',
+                    'brownfield_mean_NTL': '#984ea3',
+                    'commercial_mean_NTL': '#ff7f00',
+                    'construction_mean_NTL': '#ffff33',
+                    'farmland_mean_NTL': '#a65628',
+                    'forest_mean_NTL': '#f781bf',
+                    'grass': '#999999'
+                };
+                return poiColors[poiType] || '#000000'; // 默认黑色
+            }
+
+            // // 点图层
+            // if (data.features.some(f => f.geometry.type === 'Point')) {
+            //     map.addLayer({
+            //         id: `points-${side}`,
+            //         type: 'circle',
+            //         source: {
+            //             type: 'geojson',
+            //             data: {
+            //                 type: 'FeatureCollection',
+            //                 features: data.features.filter(f => f.geometry.type === 'Point')
+            //             }
+            //         },
+            //         paint: {
+            //             'circle-radius': 2,
+            //             'circle-color': side === 'right' ?
+            //                 [
+            //                     'interpolate',
+            //                     ['linear'],
+            //                     ['get', currentIndicator],
+            //                     0, '#ffffcc',
+            //                     1, '#ffeda0',
+            //                     2, '#fed976',
+            //                     3, '#feb24c',
+            //                     4, '#fd8d3c'
+            //                 ] :
+            //                 getPoiColor(currentPoi)
+            //         }
+            //     });
+            // }
+
+            // // 线图层
+            // if (data.features.some(f => f.geometry.type === 'LineString')) {
+            //     map.addLayer({
+            //         id: `lines-${side}`,
+            //         type: 'line',
+            //         source: {
+            //             type: 'geojson',
+            //             data: {
+            //                 type: 'FeatureCollection',
+            //                 features: data.features.filter(f => f.geometry.type === 'LineString')
+            //             }
+            //         },
+            //         paint: {
+            //             'line-width': 2,
+            //             // 'line-color': side === 'right' ? '#fd8d3c' : getPoiColor(currentPoi),
+            //             'line-color': side === 'right' ?
+            //                 [
+            //                     'interpolate',
+            //                     ['linear'],
+            //                     ['get', currentIndicator],
+            //                     0, '#ffffcc',
+            //                     1, '#ffeda0',
+            //                     2, '#fed976',
+            //                     3, '#feb24c',
+            //                     4, '#fd8d3c'
+            //                 ] :
+            //                 getPoiColor(currentPoi)
+            //         }
+            //     });
+            // }
+
+            // 多边形图层
+            if (data.features.some(f => ['Polygon', 'MultiPolygon'].includes(f.geometry.type))) {
+                
+
+                // 添加图形的3D图层
+                let heightFiled = null, fillExtrusionColor = null;
+
+                if (side === 'left') {
+                    if (currentPoi == 'residential_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#D6E4FF',
+                            1000, '#ADC8FF',
+                            2000, '#84A9FF',
+                            3000, '#6690FF',
+                            4000, '#3366FF'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+                    if (currentPoi == 'industrial_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#FFE3D6',
+                            1000, '#FFC0AE',
+                            2000, '#FF9785',
+                            3000, '#FF6F67',
+                            4000, '#FF353C'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+                    if (currentPoi == 'retail_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#F8E6D0',
+                            1000, '#F1C9A4',
+                            2000, '#D79A70',
+                            3000, '#B06A46',
+                            4000, '#7c3419'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+                    if (currentPoi == 'brownfield_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#ffffcc',
+                            1000, '#ffeda0',
+                            2000, '#fed976',
+                            3000, '#feb24c',
+                            4000, '#fd8d3c'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+                    if (currentPoi == 'commercial_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#F3D6FF',
+                            1000, '#E2ADFF',
+                            2000, '#CE84FF',
+                            3000, '#BA66FF',
+                            4000, '#9A33FF'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+                    if (currentPoi == 'construction_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#D9FEFB',
+                            1000, '#B3FEFC',
+                            2000, '#8CF8FE',
+                            3000, '#70EBFD',
+                            4000, '#41D7FC'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+                    if (currentPoi == 'farmland_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#FEF1CC',
+                            1000, '#FDDF99',
+                            2000, '#F9C666',
+                            3000, '#F3AD3F',
+                            4000, '#eb8704'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+                    if (currentPoi == 'forest_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#E8F7C9',
+                            1000, '#CEEF97',
+                            2000, '#9FD05D',
+                            3000, '#6CA232',
+                            4000, '#336408'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+                    if (currentPoi == 'grass_mean_NTL') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentPoi],
+                            0, '#F0FDD3',
+                            1000, '#DDFCA8',
+                            2000, '#C3F67B',
+                            3000, '#A8ED59',
+                            4000, '#81E226'
+                        ];
+
+                        heightFiled = ["*", ['get', currentPoi], 100];
+                    }
+
+
+                    // ... 其他左
+
+                } else {
+
+                    if (currentIndicator == 'Over_illumination') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentIndicator],
+                            0, '#ffffcc',
+                            1000, '#ffeda0',
+                            2000, '#fed976',
+                            3000, '#feb24c',
+                            4000, '#fd8d3c'
+                        ];
+
+                        heightFiled = ["*", ['get', currentIndicator], 1];
+                    }
+                    if (currentIndicator == 'Trespass') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentIndicator],
+                            0, '#ffffcc',
+                            1000, '#ffeda0',
+                            2000, '#fed976',
+                            3000, '#feb24c',
+                            4000, '#fd8d3c'
+                        ];
+
+                        heightFiled = ["*", ['get', currentIndicator], 1000];
+                    }
+
+                    if (currentIndicator == 'Clutter') {
+                        fillExtrusionColor = [
+                            'interpolate',
+                            ['linear'],
+                            ['get', currentIndicator],
+                            0, '#ffffcc',
+                            1000, '#ffeda0',
+                            2000, '#fed976',
+                            3000, '#feb24c',
+                            4000, '#fd8d3c'
+                        ];
+
+                        heightFiled = ["*", ['get', currentIndicator], 2000000];
+                    }
+                    // ... 其他右
+                }
+
+                map.addLayer({
+                    'id': `polygons-${side}`,
+                    'type': 'fill-extrusion',
+                    'source': {
+                        type: 'geojson',
+                        data: {
+                            type: 'FeatureCollection',
+                            features: data.features.filter(f => ['Polygon', 'MultiPolygon'].includes(f.geometry.type))
+                        }
+                    },
+                    'layout': {},
+                    'paint': {
+                        // 使用渐变颜色填充
+                        'fill-extrusion-color': fillExtrusionColor,
+                        // 控制锥形的高度，这里使用属性'height'来动态设置高度
+                        'fill-extrusion-height': heightFiled
+                    }
+                });
+            }
+        }
+
+        function extendBounds(bounds, geometry) {
+            try {
+                if (geometry.type === 'Point') {
+                    bounds.extend(geometry.coordinates);
+                } else if (geometry.type === 'LineString') {
+                    geometry.coordinates.forEach(coord => bounds.extend(coord));
+                } else if (geometry.type === 'Polygon') {
+                    geometry.coordinates[0].forEach(coord => bounds.extend(coord));
+                } else if (geometry.type === 'MultiPolygon') {
+                    geometry.coordinates.forEach(polygon => {
+                        polygon[0].forEach(coord => bounds.extend(coord));
+                    });
+                }
+            } catch (error) {
+                console.error('在扩展边界时发生错误:', error);
+                console.error('问题特征:', JSON.stringify(geometry, null, 2));
+            }
+        }
+
+        $('#controls').on('click', 'div', function (e) {
+            $(this).addClass('active').siblings().removeClass('active');
+            currentCity = $(this).attr('value');
+            updateMap();
+            updateChart();
+        });
+
+        document.getElementById('indicatorSelect').addEventListener('change', function (e) {
+            currentIndicator = e.target.value;
+            updateMap();
+            updateChart();
+        });
+
+        document.getElementById('poiSelect').addEventListener('change', function (e) {
+            currentPoi = e.target.value;
+            updateMap();
+            updateChart();
+        });
+
+        mapLeft.on('load', function () {
+            updateMap();
+            updateChart();
+            console.log('mapLeft load');
+        });
+
+        mapRight.on('load', function () {
+            updateMap();
+            updateChart();
+            console.log('mapRight load');
+        });
+
+        // 拖拽
+        mapLeft.on("drag", function () {
+            mapLeft_x = mapLeft.getCenter().lng;
+            mapLeft_y = mapLeft.getCenter().lat;
+            mapRight.setCenter([mapLeft_x, mapLeft_y]);
+        });
+        mapRight.on("drag", function () {
+            mapRight_x = mapRight.getCenter().lng;
+            mapRight_y = mapRight.getCenter().lat;
+            mapLeft.setCenter([mapRight_x, mapRight_y]);
+        });
+
+        // //   放大缩小
+        // mapLeft.on("zoom", function() {
+        //     mapLeft_zoom = mapLeft.getZoom();
+        //     mapRight.setZoom(mapLeft_zoom); 
+        // });
+        // mapRight.on("zoom", function() {
+        //     mapRight_zoom = mapRight.getZoom();
+        //     mapLeft.setZoom(mapRight_zoom); 
+        // });
+
+        // // 倾斜
+        // mapLeft.on("pitch", function() {
+        //     mapLeft_pitch = mapLeft.getPitch();
+        //     mapRight.setPitch(mapLeft_pitch);
+        // });
+        // mapRight.on("pitch", function() {
+        //     mapRight_pitch = mapRight.getPitch();
+        //     mapLeft.setPitch(mapRight_pitch);
+        // });
+
+        // // 旋转
+        // mapRight.on("rotate", function() {
+        //     mapRight_bear = mapRight.getBearing();
+        //     mapLeft.setBearing(mapRight_bear);
+        // });
+        // mapLeft.on("rotate", function() {
+        //     mapLeft_bear = mapLeft.getBearing();
+        //     mapRight.setBearing(mapLeft_bear);
+        // });
+
+        // 导航选择事件
+        $("#navigation").on("click", "li", function (e) {
+            const val = $(this).attr('value')
+            console.log('导航选择', e, val)
+            $(this).addClass('active').siblings().removeClass('active');
+            if (val === 'A') {
+                document.getElementById('controls').style.display = 'flex'; // 显示控制面板
+                // document.getElementById('map-container').style.display = 'block'; // 显示地图容器
+                document.getElementById('map-container').style.display = 'flex'; // 显示地图容器
+                document.getElementById('image-container').style.display = 'none'; // 隐藏图片容器
+
+            } else {
+                document.getElementById('controls').style.display = 'none'; // 隐藏控制面板
+                document.getElementById('map-container').style.display = 'none'; // 隐藏地图容器
+                document.getElementById('image-container').style.display = 'block'; // 显示图片容器
+            }
+        });
+        // // 添加按钮点击事件
+        // document.getElementById('removeElements').addEventListener('click', function() {
+        //     document.getElementById('controls').remove(); // 移除控制面板
+        //     document.getElementById('map-container').remove(); // 移除地图容器
+        // });
+
+        function updateImage() {
+            // const residentialValue = document.getElementById('residentialSlider').value;
+            // const commercialValue = document.getElementById('commercialSlider').value;
+            // const constructionValue = document.getElementById('constructionSlider').value;
+            // const grasslandValue = document.getElementById('grasslandSlider').value;
+
+            // 获取当前移动的滑块的ID
+            const sliderId = event.target.id; // 事件对象需要传入
+            const sliderType = sliderId.replace('Slider', ''); // 获取滑块类型
+            const value = event.target.value; // 获取当前滑块的值 
+            event.target.nextElementSibling.innerText = value; // 更新滑块的显示值
+            // const generatedImageName = `img1_${sliderType}+${value}.jpg`; // 根据滑块类型拼接图片名 
+            // const generatedImageName = `1000${sliderType}${value >= 0 ? '+' : ''}${value}.jpg`; // 根据滑块类型拼接图片名
+            // const generatedImageName = value === '0' ? '1000.jpg' : `1000${sliderType}${value >= 0 ? '+' : ''}${value}.jpg`; // 根据滑块类型拼接图片名
+
+            const currentGroundTruthImageSrc = document.getElementById('groundTruthImage').src; // 获取当前的真实图像源
+            const currentImagePrefix = currentGroundTruthImageSrc.split('/').pop().split('.')[0]; // 提取文件名前缀
+            const generatedImageName = value === '0' ? `${currentImagePrefix}.jpg` : `${currentImagePrefix}${sliderType}${value >= 0 ? '+' : ''}${value}.jpg`; // 根据滑块类型拼接图片名
+            console.log('generatedImageName', generatedImageName)
+            document.getElementById('generatedImage').src = `./data/fig/${generatedImageName}`;
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const images = ['./data/fig/1000.jpg', './data/fig/10401.jpg',]; // 图片库
+            const groundTruthImage = document.getElementById('groundTruthImage');
+            const generatedImage = document.getElementById('generatedImage');
+
+            document.getElementById('changeParcelButton').addEventListener('click', function () {
+                const currentSrc = groundTruthImage.src;
+                let newSrc;
+                do {
+                    newSrc = images[Math.floor(Math.random() * images.length)];
+                } while (newSrc === currentSrc); // 确保不重复选择当前图片
+                groundTruthImage.src = newSrc; // 切换图片
+                generatedImage.src = newSrc; // 切换图片 
+
+                // 恢复 grasslandSlider 的值为默认值 0
+                document.getElementById('residentialSlider').value = 0; // 添加这一行
+                document.getElementById('commercialSlider').value = 0; // 添加这一行
+                document.getElementById('constructionSlider').value = 0; // 添加这一行
+                document.getElementById('grasslandSlider').value = 0; // 添加这一行
+                // updateImage(); // 更新图像以反映新的滑块值
+            });
+        });
+    </script>
+    <script>
+        // 假设ate_dict是从后端传递过来的字典
+        // const ate_dict = {
+        //     'Illumination': {
+        //         'Los Angeles': {
+        //             'Residential': 0.41,
+        //             'Commercial': 0.14,
+        //             'Retail': 0.11,
+        //             'Brownfield': 0.1,
+        //             'Construction': 0.05,
+        //             'Industrial': 0.05,
+        //             'Grass': 0.91,
+        //             'Farmland': -0.02,
+        //             'Forest': 0.03
+        //         }
+        //     }
+        //     // ... 其他城市的数据
+        // };
+
+        // fetch('./data/ate.json') // 替换为您的 JSON 文件路径
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         ate_dict = data; // 将读取的数据赋值给 ate_dict
+        //         console.log('数据已成功加载:', ate_dict);
+        //     })
+        //     .catch(error => {
+        //         console.error('加载 JSON 数据时出错:', error);
+        // });
+
+        // function updateAteChart(currentCity, currentIndicator, currentPoi) {
+        //     const ateValue = ate_dict[currentIndicator][currentCity][currentPoi];
+        //     const chartContainer = document.getElementById('ate-chart');
+        //     chartContainer.innerHTML = ''; // 清空之前的图表
+
+        //     // 创建柱状图
+        //     const bar = document.createElement('div');
+        //     bar.style.width = '50px';
+        //     bar.style.height = `${Math.max(ateValue * 100, 0)}px`; // 根据ate值设置高度
+
+        //     console.log('柱子高度',`${Math.max(ateValue * 100, 0)}px`)
+        //     bar.style.backgroundColor = 'blue';
+        //     bar.style.margin = '0 auto';
+        //     chartContainer.appendChild(bar);
+        // }
+
+        // 监听选择变化
+        // document.getElementById('poiSelect').addEventListener('change', function() {
+        //     const currentCity = document.getElementById('citySelect').value; // 假设有一个城市选择器
+        //     const currentIndicator = document.getElementById('indicatorSelect').value;
+        //     const currentPoi = this.value;
+        //     updateAteChart(currentCity, currentIndicator, currentPoi);
+        // });
+
+        var ateJson = null;
+        function updateChart() {
+            if (!ateJson) {
+                fetch('./data/ate.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        ateJson = data;
+                        updateChartInner();
+                    })
+                    .catch(error => {
+                        console.error('加载ATE数据时出错:', error);
+                        alert('无法加载ATE数据，请检查数据格式或网络连接。');
+                    });
+                return;
+            } else {
+                updateChartInner();
+            }
+        }
+
+        function updateChartInner() {
+            var ateData = ateJson[currentIndicator][currentCity];
+            let currentPoi2 = currentPoi.split('_')[0]
+            const firstLetter = currentPoi2.charAt(0)
+            const firstLetterCap = firstLetter.toUpperCase()
+            const remainingLetters = currentPoi2.slice(1)
+            const capitalizedWord = firstLetterCap + remainingLetters
+            var ateValue = ateData[capitalizedWord];
+            let atePercent1 = Math.random() * 0.5;
+            let atePercent2 = Math.random() * 0.5 + 0.5;
+            var ateColor1 = atePercentToColor(atePercent1);
+            var ateColor2 = atePercentToColor(atePercent2);
+            console.log('ateColor1', ateColor1)
+            console.log('ateColor2', ateColor2)
+            console.log(`linear-gradient(to bottom, ${ateColor1}, ${ateColor2})`)
+            // $('#bar').css('background-image', `linear-gradient(to bottom, ${ateColor1}, ${ateColor2})`);
+            // $('#bar').css('background-image', `linear-gradient(to bottom, ${ateColor1}, ${ateColor2})`);
+            
+            
+            // $('#bar').attr('data-value', atePercent * 100);
+            let height = Math.abs(ateValue) * 1000
+            $('#bar').css('height', ateValue <= 0.3 ? height + 'px' : '300px');
+            $('#bar').attr('data-value', ateValue);
+            // let word = ateData[capitalizedWord+"_word"]
+            // $('#word').text(word);
+        }
+
+        function atePercentToColor(percent) {
+            var r, g, b;
+            if (percent < 0.25) {
+                r = 255;
+                g = 255 * (percent * 4);
+                b = 0;
+            } else if (percent < 0.5) {
+                r = 255 * ((0.5 - percent) * 4);
+                g = 255;
+                b = 0;
+            } else if (percent < 0.75) {
+                r = 0;
+                g = 255;
+                b = 255 * ((percent - 0.5) * 4);
+            } else {
+                r = 0;
+                g = 255 * ((1 - percent) * 4);
+                b = 255;
+            }
+            return 'rgb(' + r + ',' + g + ',' + b + ')';
+        }
+    </script>
+</body>
+
+</html>

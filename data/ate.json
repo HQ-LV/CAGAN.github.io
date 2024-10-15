@@ -1,0 +1,241 @@
+{
+    "Over_illumination": {
+        "paris": {
+            "Residential": 0.32,
+            "Residential_word":"sssssss",
+            "Commercial": 0.0,
+            "Retail": 0.01,
+            "Brownfield": -0.08,
+            "Construction": 0.17,
+            "Industrial": -0.2,
+            "Grass": 1.41,
+            "Farmland": -0.02,
+            "Forest": 0.3
+        },
+        "london": {
+            "Residential": 0.24,
+            "Commercial": 0.27,
+            "Retail": 0.35,
+            "Brownfield": 0.0,
+            "Construction": 0.29,
+            "Industrial": 0.03,
+            "Grass": 0.14,
+            "Farmland": 0.17,
+            "Forest": 0.23
+        },
+        "newyork": {
+            "Residential": 0.31,
+            "Commercial": 0.14,
+            "Retail": 0.0,
+            "Brownfield": 0.09,
+            "Construction": 0.15,
+            "Industrial": 0.0,
+            "Grass": 0.9,
+            "Farmland": -0.14,
+            "Forest": 0.08
+        },
+        "shanghai": {
+            "Residential": 0.42,
+            "Commercial": 0.27,
+            "Retail": 0.18,
+            "Brownfield": 0.08,
+            "Construction": 0.06,
+            "Industrial": 0.16,
+            "Grass": 0.57,
+            "Farmland": 0.0,
+            "Forest": 0.29
+        },
+        "beijing": {
+            "Residential": 0.3,
+            "Residential_word":"sssssss哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇sssssss哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇sssssss哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇",
+            "Commercial": 0.2,
+            "Retail": 0.12,
+            "Brownfield": 0.13,
+            "Construction": 0.13,
+            "Industrial": 0.13,
+            "Grass": 0.68,
+            "Farmland": 0.02,
+            "Forest": 0.02
+        },
+        "guangzhou": {
+            "Residential": 0.52,
+            "Commercial": 0.42,
+            "Retail": 0.13,
+            "Brownfield": 0.22,
+            "Construction": 0.33,
+            "Industrial": 0.14,
+            "Grass": 0.64,
+            "Farmland": 0.05,
+            "Forest": 0.18
+        },
+        "losAngeles": {
+            "Residential": 0.41,
+            "Commercial": 0.14,
+            "Retail": 0.11,
+            "Brownfield": 0.1,
+            "Construction": 0.05,
+            "Industrial": 0.05,
+            "Grass": 0.91,
+            "Farmland": -0.02,
+            "Forest": 0.03
+        }
+    },
+    "Trespass": {
+        "paris": {
+            "Residential": 0.19,
+            "Commercial": -0.01,
+            "Retail": -0.02,
+            "Brownfield": -0.13,
+            "Construction": 0.19,
+            "Industrial": 0.05,
+            "Grass": 0.95,
+            "Farmland": -0.01,
+            "Forest": 0.33
+        },
+        "london": {
+            "Residential": 0.31,
+            "Commercial": 0.2,
+            "Retail": 0.29,
+            "Brownfield": 0.0,
+            "Construction": 0.27,
+            "Industrial": 0.02,
+            "Grass": 0.05,
+            "Farmland": 0.17,
+            "Forest": 0.24
+        },
+        "newyork": {
+            "Residential": 0.21,
+            "Commercial": 0.08,
+            "Retail": -0.05,
+            "Brownfield": 0.04,
+            "Construction": 0.12,
+            "Industrial": -0.01,
+            "Grass": 0.63,
+            "Farmland": -0.15,
+            "Forest": 0.02
+        },
+        "shanghai": {
+            "Residential": 0.38,
+            "Commercial": 0.26,
+            "Retail": 0.14,
+            "Brownfield": 0.08,
+            "Construction": 0.04,
+            "Industrial": 0.12,
+            "Grass": 0.43,
+            "Farmland": 0.01,
+            "Forest": 0.24
+        },
+        "beijing": {
+            "Residential": 0.1,
+            "Commercial": 0.06,
+            "Retail": 0.07,
+            "Brownfield": 0.07,
+            "Construction": 0.09,
+            "Industrial": 0.09,
+            "Grass": 0.36,
+            "Farmland": 0.0,
+            "Forest": 0.01
+        },
+        "guangzhou": {
+            "Residential": 0.41,
+            "Commercial": 0.26,
+            "Retail": 0.05,
+            "Brownfield": 0.21,
+            "Construction": 0.17,
+            "Industrial": 0.11,
+            "Grass": 0.45,
+            "Farmland": 0.03,
+            "Forest": 0.07
+        },
+        "losAngeles": {
+            "Residential": 0.02,
+            "Commercial": 0.33,
+            "Retail": 0.07,
+            "Brownfield": 0.18,
+            "Construction": -0.32,
+            "Industrial": -0.14,
+            "Grass": -0.06,
+            "Farmland": 0.0,
+            "Forest": 0.03
+        }
+    },
+    "Clutter": {
+        "paris": {
+            "Residential": 0.31,
+            "Commercial": 0.11,
+            "Retail": 0.13,
+            "Brownfield": -0.01,
+            "Construction": -0.02,
+            "Industrial": 0.24,
+            "Grass": 0.27,
+            "Farmland": 0.1,
+            "Forest": 0.08
+        },
+        "london": {
+            "Residential": 0.29,
+            "Commercial": -0.01,
+            "Retail": 0.15,
+            "Brownfield": -0.01,
+            "Construction": -0.04,
+            "Industrial": 0.01,
+            "Grass": 0.06,
+            "Farmland": -0.03,
+            "Forest": 0.04
+        },
+        "newyork": {
+            "Residential": 0.23,
+            "Commercial": 0.19,
+            "Retail": 0.08,
+            "Brownfield": 0.09,
+            "Construction": 0.11,
+            "Industrial": -0.01,
+            "Grass": 0.04,
+            "Farmland": -0.02,
+            "Forest": -0.09
+        },
+        "shanghai": {
+            "Residential": 0.4,
+            "Commercial": 0.0,
+            "Retail": 0.0,
+            "Brownfield": 0.02,
+            "Construction": -0.04,
+            "Industrial": 0.04,
+            "Grass": -0.09,
+            "Farmland": 0.02,
+            "Forest": 0.0
+        },
+        "beijing": {
+            "Residential": 0.11,
+            "Commercial": -0.16,
+            "Retail": -0.01,
+            "Brownfield": 0.05,
+            "Construction": 0.05,
+            "Industrial": 0.09,
+            "Grass": 0.17,
+            "Farmland": 0.06,
+            "Forest": -0.05
+        },
+        "guangzhou": {
+            "Residential": 0.39,
+            "Commercial": 0.1,
+            "Retail": -0.03,
+            "Brownfield": 0.05,
+            "Construction": -0.09,
+            "Industrial": 0.04,
+            "Grass": -0.15,
+            "Farmland": 0.06,
+            "Forest": 0.03
+        },
+        "losAngeles": {
+            "Residential": 0.0,
+            "Commercial": 0.08,
+            "Retail": 0.07,
+            "Brownfield": 0.05,
+            "Construction": -0.14,
+            "Industrial": -0.06,
+            "Grass": -0.07,
+            "Farmland": 0.1,
+            "Forest": 0.06
+        }
+    }
+}

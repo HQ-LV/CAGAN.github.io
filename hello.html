@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 定义下拉框的样式 */
+        .select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 隐藏默认的下拉箭头 */
+        .select-wrapper select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            outline: none;
+            border: none;
+            padding: 10px 20px;
+            background-color: #1e1e1e;
+            color: #fff;
+            cursor: pointer;
+            width: 200px;
+            font-size: 16px;
+            box-sizing: border-box;
+            border-radius: 0;
+        }
+
+        /* 定义下拉框的悬停效果 */
+        .select-wrapper select:hover {
+            background-color: #333;
+        }
+
+        /* 定义下拉框的焦点效果 */
+        .select-wrapper select:focus {
+            box-shadow: 0 0 0 2px #00adb5;
+        }
+
+        /* 添加一个伪元素来创建自定义的下拉箭头 */
+        .select-wrapper:after {
+            content: '\25BC';
+            position: absolute;
+            right: 10px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            color: #fff;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        /* 确保伪元素在不同浏览器下垂直居中 */
+        .select-wrapper::after {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .select-wrapper select option {
+            background-color: #1e1e1e;
+            padding: 10px 20px;
+            border-radius: 0 !important;
+        }
+
+        .select-wrapper select option:hover {
+            background-color: rgb(251, 104, 72);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="select-wrapper">
+        <select>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+            <!-- 更多选项 -->
+        </select>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+    border: none;
+    padding: 10px 20px;
+    background-color: #1e1e1e;
+    color: #fff;
+    cursor: pointer;
+    width: 200px;
+    font-size: 16px;
+    box-sizing: border-box;
+    border-radius: 0;
+}
+
+/* 定义下拉框的悬停效果 */
+select:hover {
+    background-color: #333;
+}
+
+/* 定义下拉框的焦点效果 */
+select:focus {
+    box-shadow: 0 0 0 2px #00adb5;
+}
+
+/* 添加一个伪元素来创建自定义的下拉箭头 */
+.select-wrapper:after {
+    content: '\25BC';
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    color: #fff;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+/* 确保伪元素在不同浏览器下垂直居中 */
+.select-wrapper::after {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+select option {
+    background-color: #1e1e1e;
+    padding: 10px 20px;
+    border-radius: 0 !important;
+}
+
+select option:hover {
+    background-color: rgb(251, 104, 72);
+}
+
+
+.bar-chart {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 30px;
+  }
+
+  .bar {
+    width: 20%;
+    background-color: #f0f0f0;
+    margin: 0 5px;
+    position: relative;
+  }
+
+  .bar::after {
+    content: attr(data-value) '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 14px;
+  }
+
+  .bar {
+    /* background-image: linear-gradient(to bottom, red, orange); */
+    /* height: 150px; */
+  }
+
+
+  /* bar */
+  input[type='range'] {
+    -webkit-appearance: none; /* 移除默认样式 */
+    width: 60%; 
+    height: 20px; /* 设置滑块的高度 */
+    background: transparent; /* 背景透明 */
+    cursor: pointer; /* 指针样式 */
+    margin: 10px 0; /* 外边距 */
+  }
+  
+  /* 轨道（滑块下的轨道）的样式 */
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 18px;
+    background: linear-gradient(to right, #494ffa, #f9684a); /* 渐变背景 */
+    border-radius: 5px; /* 圆角 */
+  }
+  
+  /* 滑块的样式 */
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; /* 移除默认样式 */
+    border: none; /* 无边框 */
+    height: 30px; /* 滑块的高度 */
+    width: 30px; /* 滑块的宽度 */
+    border-radius: 50%; /* 圆形 */
+    background: #fff; /* 背景颜色 */
+    transition: box-shadow 0.3s; /* 阴影过渡效果 */
+    margin-top: -4px;
+  }
+  
+  /* 滑块悬停效果 */
+  input[type='range']:hover::-webkit-slider-thumb {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2); /* 阴影 */
+  }
