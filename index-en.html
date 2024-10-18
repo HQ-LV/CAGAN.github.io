@@ -283,7 +283,7 @@
             </div>
                 <div style=" text-align: right;width: 360px;">
                 <div style="display: flex;justify-content: space-between;align-items: center;">
-                <label style="width: 100px;">Residential</label> <!-- 只能取 0 +1 +5  -->
+                <label style="width: 450px;">Residential NTL Change</label> <!-- 只能取 0 +1 +5  -->
                 <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="1" step="1" onchange="updateImage()" oninput="this.value = (this.value < 1) ? 0 : (this.value > 5) ? 5 : (this.value % 4 === 0 ? this.value : (this.value < 3 ? 1 : 5));"> 仅允许选择1和5 -->
                 <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 1) ? 1 : 5;"> 选择小于等于1返回1，大于1返回5 -->
                 <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="1" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 0) ? 0 : (this.value === 1 ? 1 : 5);"> 选择小于等于0返回0，等于1返回1，大于1返回5  -->
@@ -292,19 +292,19 @@
                 <span>0</span>
             </div>
             <div style="display: flex;justify-content: space-between;align-items: center;">
-                <label style="width: 100px;">Commercial</label> <!-- 只能取 0 +1 +5  -->
+                <label style="width: 450px;">Commercial NTL Change</label> <!-- 只能取 0 +1 +5  -->
                 <input type="range" id="commercialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
                     oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;"> 
                     <span>0</span><!-- 仅允许选择1和5 -->
                 </div>
             <div style="display: flex;justify-content: space-between;align-items: center;">
-                <label style="width: 100px;">Construction</label> <!-- 只能取 0 +1 +5  -->
+                <label style="width: 450px;">Construction NTL Change</label> <!-- 只能取 0 +1 +5  -->
                 <input type="range" id="constructionSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
                     oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" > 
                     <span>0</span> <!-- 仅允许选择1和5 -->
                 </div>
             <div style="display: flex;justify-content: space-between;align-items: center;">
-                <label style="width: 100px;">Grassland</label> <!-- 只能取 -5 0  -->
+                <label style="width: 450px;">Grassland NTL Change</label> <!-- 只能取 -5 0  -->
                 <!-- <input type="range" id="grasslandSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()" oninput="this.value = -5;"> 仅允许选择-5 -->
                 <input type="range" id="grasslandSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
                     oninput="this.value = (this.value < 0) ? -5 : 0;"> <!-- 如果小于0，则为-5，如果大于等于0，则为0 -->

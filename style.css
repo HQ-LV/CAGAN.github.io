@@ -138,15 +138,26 @@ select option:hover {
 
 
   /* bar */
+  /* input[type='range'] {
+    -webkit-appearance: none;  
+    width: 60%; 
+    height: 20px; 
+    background: transparent; 
+    cursor: pointer;  
+    margin: 10px 0;  
+  } */
+
+  /* bar */
   input[type='range'] {
     -webkit-appearance: none; /* 移除默认样式 */
-    width: 60%; 
+    /* width: 60%;  */
+    width: 85%; 
     height: 20px; /* 设置滑块的高度 */
     background: transparent; /* 背景透明 */
     cursor: pointer; /* 指针样式 */
-    margin: 10px 0; /* 外边距 */
+    margin: 10px 5px; /* 外边距 */
   }
-  
+   
   /* 轨道（滑块下的轨道）的样式 */
   input[type='range']::-webkit-slider-runnable-track {
     height: 18px;
