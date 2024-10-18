@@ -2,7 +2,6 @@
     "Over_illumination": {
         "paris": {
             "Residential": 0.32,
-            "Residential_word":"sssssss",
             "Commercial": 0.0,
             "Retail": 0.01,
             "Brownfield": -0.08,
@@ -47,13 +46,12 @@
         },
         "beijing": {
             "Residential": 0.3,
-            "Residential_word":"sssssss哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇sssssss哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇sssssss哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇哇",
             "Commercial": 0.2,
+            "Grass": 0.68,
             "Retail": 0.12,
             "Brownfield": 0.13,
             "Construction": 0.13,
             "Industrial": 0.13,
-            "Grass": 0.68,
             "Farmland": 0.02,
             "Forest": 0.02
         },
