@@ -152,15 +152,15 @@ select option:hover {
     -webkit-appearance: none; /* 移除默认样式 */
     /* width: 60%;  */
     width: 85%; 
-    height: 20px; /* 设置滑块的高度 */
+    height: 18px; /* 设置滑块的高度 */
     background: transparent; /* 背景透明 */
     cursor: pointer; /* 指针样式 */
-    margin: 10px 5px; /* 外边距 */
+    margin: 8px 5px; /* 外边距 */
   }
    
   /* 轨道（滑块下的轨道）的样式 */
   input[type='range']::-webkit-slider-runnable-track {
-    height: 18px;
+    height: 14px;
     background: linear-gradient(to right, #494ffa, #f9684a); /* 渐变背景 */
     border-radius: 5px; /* 圆角 */
   }
@@ -169,8 +169,8 @@ select option:hover {
   input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none; /* 移除默认样式 */
     border: none; /* 无边框 */
-    height: 30px; /* 滑块的高度 */
-    width: 30px; /* 滑块的宽度 */
+    height: 25px; /* 滑块的高度 */
+    width: 25px; /* 滑块的宽度 */
     border-radius: 50%; /* 圆形 */
     background: #fff; /* 背景颜色 */
     transition: box-shadow 0.3s; /* 阴影过渡效果 */

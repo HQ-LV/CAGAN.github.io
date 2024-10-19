@@ -280,7 +280,9 @@
     </div>
 
 
-    <div id="image-container" style="display: none;width: 70%;margin: auto;">
+    <!-- <div id="image-container" style="display: none;width: 70%;margin: auto;"> -->
+    <div id="image-container" style="display: none; justify-content: space-between; align-items: center;"> 
+        <div id="parcels" style="flex: 0 0 70%;     width: 70%; "> 
         <div style="display: flex;justify-content: space-around; align-items: center; height: 130px;">
             <div>
                 <button id="changeParcelButton"
@@ -294,31 +296,31 @@
                 <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 1) ? 1 : 5;"> 选择小于等于1返回1，大于1返回5 -->
                 <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="1" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 0) ? 0 : (this.value === 1 ? 1 : 5);"> 选择小于等于0返回0，等于1返回1，大于1返回5  -->
                 <input type="range" id="residentialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
-                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" style="margin: 10px 10px;">
+                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" style="margin: 8px 5px;;">
                 <span>0</span>
             </div>
             <div style="display: flex;justify-content: space-between;align-items: center;">
                 <label style="width: 180px;">商业区NTL变化</label> <!-- 只能取 0 +1 +5  -->
                 <input type="range" id="commercialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
-                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" style="margin: 10px 10px;"> 
+                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" style="margin: 8px 5px;"> 
                     <span>0</span><!-- 仅允许选择1和5 -->
                 </div>
             <div style="display: flex;justify-content: space-between;align-items: center;">
                 <label style="width: 180px;">建筑区NTL变化</label> <!-- 只能取 0 +1 +5  -->
                 <input type="range" id="constructionSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
-                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" style="margin: 10px 10px;"> 
+                    oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;" style="margin: 8px 5px;"> 
                     <span>0</span> <!-- 仅允许选择1和5 -->
                 </div>
             <div style="display: flex;justify-content: space-between;align-items: center;">
                 <label style="width: 180px;">草地NTL变化</label> <!-- 只能取 -5 0  -->
                 <!-- <input type="range" id="grasslandSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()" oninput="this.value = -5;"> 仅允许选择-5 -->
                 <input type="range" id="grasslandSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
-                    oninput="this.value = (this.value < 0) ? -5 : 0;" style="margin: 10px 10px;"> <!-- 如果小于0，则为-5，如果大于等于0，则为0 -->
+                    oninput="this.value = (this.value < 0) ? -5 : 0;" style="margin: 8px 5px;"> <!-- 如果小于0，则为-5，如果大于等于0，则为0 -->
                     <span>0</span>
                 </div>
             </div>
         </div>
-        <div style="display: flex; margin-top: 50px; justify-content: space-between; align-items: center;">
+        <div style="display: flex; margin-top: 30px; justify-content: space-between; align-items: center;">
             <div style="flex: 1; text-align: center;">
                 <!-- <img id="groundTruthImage" src="./data/fig/1000.jpg" alt="Ground Truth" style="width: 400px; height: auto;"> -->
 
@@ -336,6 +338,19 @@
                 
                 <p style="margin-top: 20px;">生成的光污染情况</p>
             </div>
+        </div>
+        </div>
+
+        <div id="cagan-describe" style="flex: 0 0 25%; width: 25%; display: flex; flex-direction: column; justify-content: flex-start;"> 
+            <h3 style="font-size: 20px; line-height: 1.5">CAGAN</h3>
+            <br>
+            <!-- <p style="width: 80%;">We apply causal inference to investigate the complex links between residential light pollution and various POIs in a specific area, uncovering fundamental causal mechanisms.</p> -->
+            <p style="width: 80%; line-height: 1.5;">阶段1: 训练一个光污染图像分类器，使用实际的光污染图像，使其能够与给定的居民区光污染地图建立准确的关联。</p>
+            <br>
+            <p style="width: 80%; line-height: 1.5;">阶段2: 仅使用基础地图进行训练，不进行着色，训练一个条件变分自编码器。然后，生成器在分类器和判别器的指导下，逐步生成真实的光污染地图。</p>
+            <br>
+            <p style="width: 80%; line-height: 1.5;">因果可解释性：调整居民区内不同建筑类型的平均夜间光强度，模型将对该区域生成新的光污染情况。</p>
+            
         </div>
 
     </div>
@@ -881,7 +896,7 @@
             } else {
                 document.getElementById('controls').style.display = 'none'; // 隐藏控制面板
                 document.getElementById('map-container').style.display = 'none'; // 隐藏地图容器
-                document.getElementById('image-container').style.display = 'block'; // 显示图片容器
+                document.getElementById('image-container').style.display = 'flex'; // 显示图片容器
             }
         });
         // // 添加按钮点击事件

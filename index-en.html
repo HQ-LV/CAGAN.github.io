@@ -274,7 +274,12 @@
     </div>
 
 
-    <div id="image-container" style="display: none;width: 70%;margin: auto;">
+    <!-- <div id="image-container" style="display: none;width: 70%;margin: auto;"> -->
+    <div id="image-container" style="display: none; justify-content: space-between; align-items: center;">
+
+        <!-- <div style="display: flex;justify-content: space-around; align-items: center; height: 150px;"> -->
+        
+        <div id="parcels" style="flex: 0 0 70%;     width: 70%; "> 
         <div style="display: flex;justify-content: space-around; align-items: center; height: 130px;">
             <div>
                 <button id="changeParcelButton"
@@ -284,9 +289,6 @@
                 <div style=" text-align: right;width: 360px;">
                 <div style="display: flex;justify-content: space-between;align-items: center;">
                 <label style="width: 450px;">Residential NTL Change</label> <!-- 只能取 0 +1 +5  -->
-                <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="1" step="1" onchange="updateImage()" oninput="this.value = (this.value < 1) ? 0 : (this.value > 5) ? 5 : (this.value % 4 === 0 ? this.value : (this.value < 3 ? 1 : 5));"> 仅允许选择1和5 -->
-                <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 1) ? 1 : 5;"> 选择小于等于1返回1，大于1返回5 -->
-                <!-- <input type="range" id="residentialSlider" min="-5" max="5" value="1" step="1" onchange="updateImage()" oninput="this.value = (this.value <= 0) ? 0 : (this.value === 1 ? 1 : 5);"> 选择小于等于0返回0，等于1返回1，大于1返回5  -->
                 <input type="range" id="residentialSlider" min="-5" max="5" value="0" step="1" onchange="updateImage()"
                     oninput="this.value = (this.value <= 0) ? 0 : (this.value >= 3) ? 5 : 1;">
                 <span>0</span>
@@ -312,7 +314,7 @@
                 </div>
             </div>
         </div>
-        <div style="display: flex; margin-top: 50px; justify-content: space-between; align-items: center;">
+        <div style="display: flex; margin-top: 30px; justify-content: space-between; align-items: center;">
             <div style="flex: 1; text-align: center;">
                 <!-- <img id="groundTruthImage" src="./data/fig/1000.jpg" alt="Ground Truth" style="width: 400px; height: auto;"> -->
 
@@ -332,7 +334,29 @@
             </div>
         </div>
 
+        </div >
+        <div id="cagan-describe" style="flex: 0 0 25%; width: 25%; display: flex; flex-direction: column; justify-content: flex-start;"> 
+            <!-- <p style="width: 80%;">We apply causal inference to investigate the complex links between residential light pollution and various POIs in a specific area, uncovering fundamental causal mechanisms.</p> -->
+            
+            <h3 style="font-size: 20px; line-height: 1.5">CAGAN</h3>
+            <br>
+            <p style="width: 80%; line-height: 1.5;">Stage 1: A light pollution image classifier is trained with actual light pollution images, enabling it to establish accurate associations with given residential area light pollution maps.</p>
+            <br>
+            <p style="width: 80%; line-height: 1.5;">Stage 2: A conditional variational autoencoder is trained exclusively using the base map without colorization. The generator is then guided by the classifier and discriminator to progressively generate authentic light pollution maps.</p>
+            <br>
+            <p style="width: 80%; line-height: 1.5;">Causality Interpretability: Deliberately adjusting the average nighttime light intensity of various building types within residential areas leads to observable changes in brightness across different regions.</p>
+            
+        </div>
+
     </div>
+
+</div >
+
+
+    
+
+
+
 
     
 
@@ -883,7 +907,7 @@
             } else {
                 document.getElementById('controls').style.display = 'none'; // 隐藏控制面板
                 document.getElementById('map-container').style.display = 'none'; // 隐藏地图容器
-                document.getElementById('image-container').style.display = 'block'; // 显示图片容器
+                document.getElementById('image-container').style.display = 'flex'; // 显示图片容器
             }
         });
         // // 添加按钮点击事件
